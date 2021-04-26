@@ -1,0 +1,22 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "Rutgers Coding Bootcamp assignment using MySQL",
+  "main": "employeetracker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KuyaJasper/Employee-Tracker.git"
+  },
+  "author": "Jasper Abarquez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KuyaJasper/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/KuyaJasper/Employee-Tracker#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
