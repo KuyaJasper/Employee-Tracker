@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
-  // Insert your MySQL password here between the tick marks, otherwise the application will not work!!!!!
+// Insert your MySQL password here between the tick marks, otherwise the application will not work!!!!!
   password: 'Oem212726!',
   database: 'employee_trackerDB',
 });
@@ -29,6 +29,8 @@ inquirer
       'Add an employee',
       'Remove an employee',
       'Update employee roles',
+      'Search for an employee by manager',
+      'Update employee manager',
       'Leave',
     ],
   })
@@ -64,6 +66,13 @@ inquirer
       case 'Update employee roles':
         UpdateEmployeeRoles();
         break;
+      // TO DO - FINSIH THISE TWO FUNCTIONS 
+        case 'Search for an employee by manager':
+        addTHISfunction();
+        break;
+      case 'Update employee manager':
+        addTHISfunction();
+        break;
 
 
       case 'Leave':
@@ -76,6 +85,18 @@ inquirer
 
 
 /* ---------- DEPARTMENT SECTION ---------- */
+
+
+// VIEW ALL DEPARTMENTS 
+const departmentView = () => {
+  console.log('Loading all departments...\n');
+  connection.query("SELECT * FROM department;", (err,res) => {
+    if (err) throw err;
+    console.table(res);
+    menuPrompt();
+  });
+};
+
 
 
 
@@ -102,15 +123,9 @@ const departmentAdd = () => {
 };
 
 
-// VIEW ALL DEPARTMENTS 
-const departmentView = () => {
-  console.log('Loading all departments...\n');
-  connection.query("SELECT * FROM department;", (err,res) => {
-    if (err) throw err;
-    console.table(res);
-    menuPrompt();
-  });
-};
+
+
+
 
 // REMOVE A DEPARMENT
 const departmentRemove = () => {
@@ -159,6 +174,11 @@ const roleView = () => {
   });
 };
 
+
+
+
+
+
 // ADD A DEPARTMENT
 const roleAdd = () => {
   connection.query("SELECT * FROM department", (err, departments) => {
@@ -204,6 +224,11 @@ const roleAdd = () => {
       });
   });
 };
+
+
+
+
+
 
 // REMOVE A ROLE
 const roleRemove = () => {
@@ -256,6 +281,10 @@ const employeeView = () => {
     menuPrompt();
   });
 };
+
+
+
+
 
 
 // ADD EMPLOYEE
@@ -318,6 +347,10 @@ const employeeAdd = () => {
 };
 
 
+
+
+
+
 // REMOVE AN EMPLOYEE
 
 const employeeRemove = () => {
@@ -352,6 +385,14 @@ const employeeRemove = () => {
       });
   });
 };
+
+
+
+
+
+
+
+
 
 // UPDATE EMPLOYEE ROLES
 
@@ -405,6 +446,12 @@ const UpdateEmployeeRoles = () => {
     });
   });
 };
+
+
+
+
+
+
 
 
 
