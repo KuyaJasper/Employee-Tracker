@@ -5,9 +5,12 @@ const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
   user: 'root',
+  // Insert your MySQL password here between the tick marks, otherwise the application will not work!!!!!
   password: 'Oem212726!',
   database: 'employee_trackerDB',
 });
+
+// Menu prompt to navigate you through the application via inquirer.
 
 const menuPrompt = () => {
 inquirer
@@ -57,6 +60,9 @@ inquirer
         break;
       case 'Remove an employee':
         employeeRemove();
+        break;
+      case 'Update employee roles':
+        UpdateEmployeeRoles();
         break;
 
 
@@ -347,8 +353,63 @@ const employeeRemove = () => {
   });
 };
 
+// UPDATE EMPLOYEE ROLES
+
+const UpdateEmployeeRoles = () => {
+  connection.query("SELECT * FROM roles", (err, roles) => {
+    if (err) throw err;
+    let newRoles = roles.map((role) => ({
+      name: role.title,
+      value: role.id,
+    }));
+
+    connection.query("SELECT * FROM employee", (err, employees) => {
+      if (err) throw err;
+      let newEmployee = employees.map((employee) => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: "employee",
+            type: "rawlist",
+            message: "Which employee do you want to update?",
+            choices: newEmployee,
+          },
+          {
+            name: "role",
+            type: "rawlist",
+            message: "What is the employees new role?",
+            choices: newRoles,
+          },
+        ])
+        .then((answer) => {
+          connection.query(
+            "UPDATE employee SET ? WHERE ?",
+            [
+              {
+                role_id: answer.role,
+              },
+              {
+                id: answer.employee,
+              },
+            ],
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} new role's inserted!\n`);
+              menuPrompt();
+            }
+          );
+        });
+    });
+  });
+};
 
 
+
+
+/* ---------- ENDS CONNECTION TO DB ---------- */
 //End Connection to DB
 const endConnection = () => {
   console.log('Ending connection..... \n');
