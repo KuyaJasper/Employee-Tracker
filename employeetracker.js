@@ -252,7 +252,100 @@ const employeeView = () => {
 };
 
 
+// ADD EMPLOYEE
 
+const employeeAdd = () => {
+  connection.query("SELECT * FROM roles", (err, roles) => {
+    if (err) throw err;
+    let newRoles = roles.map((role) => ({ name: role.title, value: role.id }));
+
+    connection.query("SELECT * FROM employee", (err, managers) => {
+      if (err) throw err;
+      let newManager = managers.map((manager) => ({
+        name: `${manager.first_name} ${manager.last_name}`,
+        value: manager.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: "firstName",
+            type: "input",
+            message: "Please enter employees first name.",
+          },
+          {
+            name: "lastName",
+            type: "input",
+            message: "Please enter employees last name.",
+          },
+          {
+            name: "role",
+            type: "rawlist",
+            message: "What is the employees role?",
+            choices: newRoles,
+          },
+          {
+            name: "manager",
+            type: "rawlist",
+            message: "What is the employees managers name?",
+            choices: newManager,
+          },
+        ])
+        .then((answer) => {
+          connection.query(
+            "INSERT INTO employee SET ?",
+            {
+              first_name: answer.firstName,
+              last_name: answer.lastName,
+              manager_id: answer.manager,
+              role_id: answer.role,
+            },
+
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} employee added!\n`);
+              menuPrompt();
+            }
+          );
+        });
+    });
+  });
+};
+
+
+// REMOVE AN EMPLOYEE
+
+const employeeRemove = () => {
+  connection.query("SELECT * FROM employee", (err, employees) => {
+    if (err) throw err;
+    let deleteEmployee = employees.map((employee) => ({
+      name: `${employee.first_name} ${employee.last_name}`,
+      value: employee.id,
+    }));
+    inquirer
+      .prompt([
+        {
+          name: "employee",
+          type: "rawlist",
+          message: "Which employee would you like to remove?",
+          choices: deleteEmployee,
+        },
+      ])
+      .then((answer) => {
+        connection.query(
+          "DELETE FROM employee WHERE ?",
+          {
+            id: answer.employee,
+          },
+
+          (err, res) => {
+            if (err) throw err;
+            console.log(`${res.affectedRows} deleted from database!\n`);
+            menuPrompt();
+          }
+        );
+      });
+  });
+};
 
 
 
