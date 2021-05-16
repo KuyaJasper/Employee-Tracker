@@ -66,12 +66,11 @@ inquirer
       case 'Update employee roles':
         UpdateEmployeeRoles();
         break;
-      // TO DO - FINSIH THISE TWO FUNCTIONS 
         case 'Search for an employee by manager':
-        addTHISfunction();
+          viewEmployeeManager();
         break;
       case 'Update employee manager':
-        addTHISfunction();
+        updateEmployeeManager();
         break;
 
 
@@ -291,61 +290,73 @@ const employeeView = () => {
 
 const employeeAdd = () => {
   connection.query("SELECT * FROM roles", (err, roles) => {
-    if (err) throw err;
-    let newRoles = roles.map((role) => ({ name: role.title, value: role.id }));
-
-    connection.query("SELECT * FROM employee", (err, managers) => {
       if (err) throw err;
-      let newManager = managers.map((manager) => ({
-        name: `${manager.first_name} ${manager.last_name}`,
-        value: manager.id,
+      let newRoles = roles.map((role) => ({
+          name: role.title,
+          value: role.id,
       }));
-      inquirer
-        .prompt([
-          {
-            name: "firstName",
-            type: "input",
-            message: "Please enter employees first name.",
-          },
-          {
-            name: "lastName",
-            type: "input",
-            message: "Please enter employees last name.",
-          },
-          {
-            name: "role",
-            type: "rawlist",
-            message: "What is the employees role?",
-            choices: newRoles,
-          },
-          {
-            name: "manager",
-            type: "rawlist",
-            message: "What is the employees managers name?",
-            choices: newManager,
-          },
-        ])
-        .then((answer) => {
-          connection.query(
-            "INSERT INTO employee SET ?",
-            {
-              first_name: answer.firstName,
-              last_name: answer.lastName,
-              manager_id: answer.manager,
-              role_id: answer.role,
-            },
+      connection.query("SELECT * FROM employee", (err, managers) => {
+          if (err) throw err;
+          let newManager = managers.map((manager) => ({
+              name: `${manager.first_name} ${manager.last_name}`,
+              value: manager.id,
+          }));
+          inquirer
+              .prompt([{
+                      name: 'firstName',
+                      type: 'input',
+                      message: "What is the employee's first name?",
+                      validate: answer => {
+                          if (answer !== "") {
+                              return true;
+                          } else {
+                              return "Please enter at least one Character.";
+                          }
+                      }
+                  },
+                  {
+                      name: 'lastName',
+                      type: 'input',
+                      message: "What is the employee's last name?",
+                      validate: answer => {
+                          if (answer !== "") {
+                              return true;
+                          } else {
+                              return "Please enter at least one Character.";
+                          }
+                      }
+                  },
+                  {
+                      name: 'role',
+                      type: 'list',
+                      message: "What is the employee's role?",
+                      choices: newRoles,
+                  },
+                  {
+                      name: 'manager',
+                      type: 'list',
+                      message: "Who is the employee's manager?",
+                      choices: newManager,
+                  }
+              ]).then((answer) => {
+                  connection.query(
+                      'INSERT INTO employee SET ?', {
+                          first_name: answer.firstName,
+                          last_name: answer.lastName,
+                          role_id: answer.role,
+                          manager_id: answer.manager,
+                      },
+                      (err, res) => {
+                          if (err) throw err;
+                          console.log(`${res.affectedRows} employee added!\n`);
 
-            (err, res) => {
-              if (err) throw err;
-              console.log(`${res.affectedRows} employee added!\n`);
-              menuPrompt();
-            }
-          );
-        });
-    });
-  });
+                          menuPrompt();
+                      }
+                  )
+              })
+      })
+  })
 };
-
 
 
 
@@ -449,10 +460,98 @@ const UpdateEmployeeRoles = () => {
 
 
 
+/* ---------- MANAGER SECTION ---------- */
+
+const viewEmployeeManager = () => {
+  connection.query("SELECT * FROM employee", (err, managers) => {
+    if (err) throw err;
+    let newManager = managers.map((manager) => ({
+      name: `${manager.first_name} ${manager.last_name}`,
+      value: `${manager.id}: ${manager.first_name} ${manager.last_name}`,
+    }));
+    inquirer
+      .prompt([
+        {
+          name: "manager",
+          type: "rawlist",
+          message: "What is the employees managers name?",
+          choices: newManager,
+        },
+      ])
+      .then((answer) => {
+        newManager = answer.manager.split(":");
+        connection.query(
+          "SELECT * FROM employee WHERE ?",
+          {
+            manager_id: newManager[0],
+          },
+
+          (err, res) => {
+            if (err) throw err;
+            console.table(
+              `${newManager[1]} is the manager of these employees: `,
+              res
+            );
+
+            menuPrompt();
+          }
+        );
+      });
+  });
+};
 
 
+const updateEmployeeManager = () => {
+  connection.query("SELECT * FROM employee", (err, managers) => {
+    if (err) throw err;
+    let newManagers = managers.map((manager) => ({
+      name: `${manager.first_name} ${manager.last_name}`,
+      value: manager.id,
+    }));
 
-
+    connection.query("SELECT * FROM employee", (err, employees) => {
+      if (err) throw err;
+      let newEmployee = employees.map((employee) => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: "employee",
+            type: "rawlist",
+            message: "Which employee do you want to update?",
+            choices: newEmployee,
+          },
+          {
+            name: "manager",
+            type: "rawlist",
+            message: "What is the employees new manager?",
+            choices: newManagers,
+          },
+        ])
+        .then((answer) => {
+          connection.query(
+            "UPDATE employee SET ? WHERE ?",
+            [
+              {
+                manager_id: answer.manager,
+              },
+              {
+                id: answer.employee,
+              },
+            ],
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} new manager inserted!\n`);
+              console.table(res);
+              menuPrompt();
+            }
+          );
+        });
+    });
+  });
+};
 
 
 
