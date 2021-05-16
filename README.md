@@ -24,13 +24,13 @@ Next you will need to install the packages. To do so type in the following comma
 npm install
 ```
 
-You will install the necessary packages from the package.json file. We will be usiing Inquirer, and MYSQL
+You will install the necessary programs from the package.json file. We will be usiing Inquirer, and MYSQL
 
 
 
 
 # Usage
-To run the application, use Terminal to open the 'Develop' folder followed by:
+To run the application, open up your Terminal/Bash and type in the following:
 
 ```bash
 npm run start
