@@ -39,7 +39,7 @@ Follow the prompts, you will be able to execute the functions detailed to you in
 
 # License
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://kuyajasper.mit-license.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://jasper-abarquez.mit-license.org)
 
 
 # Screenshot
