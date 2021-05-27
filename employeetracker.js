@@ -227,24 +227,23 @@ const roleAdd = () => {
 const roleRemove = () => {
   connection.query("SELECT * FROM roles", (err, res) => {
     if (err) throw err;
-    let deleteroles = res.map((department) => ({
-      name: `${roles.name}`,
-      value: roles.id,
+    let deleteroles = res.map((role) => ({
+      name: `${role.title}`,
     }));
     inquirer
       .prompt([
         {
           name: "roles",
           type: "rawlist",
-          message: "What role would you like to remove? (USE ID NUMBER)",
-          choices: deleteDepartment,
+          message: "What role would you like to remove?",
+          choices: deleteroles,
         },
       ])
       .then((answer) => {
         connection.query(
           "DELETE FROM roles WHERE ?",
           {
-            id: answer.roles,
+            title: answer.roles,
           },
 
           (err, res) => {
@@ -383,7 +382,7 @@ const employeeRemove = () => {
 
           (err, res) => {
             if (err) throw err;
-            console.log(`${res.affectedRows} deleted from database!\n`);
+            console.log(`${res.affectedRows} employee deleted from database!\n`);
             menuPrompt();
           }
         );

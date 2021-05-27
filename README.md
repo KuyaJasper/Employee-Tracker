@@ -30,12 +30,21 @@ You will install the necessary programs from the package.json file. We will be u
 
 
 # Usage
+
+Before using the application, you must set up the database, and seed the tables.
+
+The necessary files are located in the "SQL" folder.
+
+For the development of this project, I used [MySQL Workbench](https://www.mysql.com/products/workbench/).
+
+Any other SQL workbench should work fine.
+
 To run the application, open up your Terminal/Bash and type in the following:
 
 ```bash
 npm run start
 ```
-Follow the prompts, you will be able to execute the functions detailed to you in the terminal!
+Following the prompts, you will be able to execute the functions detailed to you in the terminal!
 
 # License
 
@@ -46,7 +55,7 @@ Follow the prompts, you will be able to execute the functions detailed to you in
 
 Example of how deployed application should run:
 
-![ScreenshotRecording](INSERT SCREEN RECORDING HERE)
+![ScreenshotRecording](./Assets/screenRecording.gif)
 
 # Questions
 
