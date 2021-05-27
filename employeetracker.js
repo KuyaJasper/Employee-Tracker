@@ -29,7 +29,6 @@ inquirer
       'Add an employee',
       'Remove an employee',
       'Update employee roles',
-      'Search for an employee by manager',
       'Update employee manager',
       'Leave',
     ],
@@ -66,14 +65,9 @@ inquirer
       case 'Update employee roles':
         UpdateEmployeeRoles();
         break;
-        case 'Search for an employee by manager':
-          viewEmployeeManager();
-        break;
       case 'Update employee manager':
         updateEmployeeManager();
         break;
-
-
       case 'Leave':
         endConnection();
         break;
@@ -459,48 +453,6 @@ const UpdateEmployeeRoles = () => {
 };
 
 
-
-/* ---------- MANAGER SECTION ---------- */
-
-const viewEmployeeManager = () => {
-  connection.query("SELECT * FROM employee", (err, managers) => {
-    if (err) throw err;
-    let newManager = managers.map((manager) => ({
-      name: `${manager.first_name} ${manager.last_name}`,
-      value: `${manager.id}: ${manager.first_name} ${manager.last_name}`,
-    }));
-    inquirer
-      .prompt([
-        {
-          name: "manager",
-          type: "rawlist",
-          message: "What is the employees managers name?",
-          choices: newManager,
-        },
-      ])
-      .then((answer) => {
-        newManager = answer.manager.split(":");
-        connection.query(
-          "SELECT * FROM employee WHERE ?",
-          {
-            manager_id: newManager[0],
-          },
-
-          (err, res) => {
-            if (err) throw err;
-            console.table(
-              `${newManager[1]} is the manager of these employees: `,
-              res
-            );
-
-            menuPrompt();
-          }
-        );
-      });
-  });
-};
-
-
 const updateEmployeeManager = () => {
   connection.query("SELECT * FROM employee", (err, managers) => {
     if (err) throw err;
@@ -558,8 +510,8 @@ const updateEmployeeManager = () => {
 /* ---------- ENDS CONNECTION TO DB ---------- */
 //End Connection to DB
 const endConnection = () => {
-  console.log('Ending connection..... \n');
-  console.log('Connection ceased, have a great day!!!!\n');
+  console.log('\n');
+  console.log('Connection ended, have a great day!!!!\n');
   connection.end();
 };
 
